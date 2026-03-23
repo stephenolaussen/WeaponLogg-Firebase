@@ -11,7 +11,7 @@
   <link rel="icon" type="image/png" href="assets/icons/icon-192.png">
 </head>
 <body>
-  <!-- Login-skjerm (før auth) -->
+  <!-- Login-screen (before auth) -->
   <div id="loginScreen" style="display:flex;align-items:center;justify-content:center;height:100vh;background:var(--bg);">
     <div style="text-align:center;padding:2rem;background:var(--panel);border-radius:12px;border:1px solid var(--border);max-width:400px;">
       <h1 style="margin-bottom:1.5rem;font-size:24px;">WeaponLog</h1>
@@ -24,9 +24,9 @@
     </div>
   </div>
 
-  <!-- App-innhold (etter auth) -->
+  <!-- App content (after auth) -->
   <div id="appContainer" style="display:none;">
-    <!-- Egendefinert Ja/Nei-dialog -->
+    <!-- Custom Yes/No dialog -->
     <div id="customConfirm" style="display:none;position:fixed;z-index:9999;left:0;top:0;width:100vw;height:100vh;background:rgba(0,0,0,0.3);align-items:center;justify-content:center;">
       <div style="background:#222;color:#fff;padding:2rem 2.5rem;border-radius:10px;box-shadow:0 4px 24px #0008;max-width:90vw;min-width:260px;text-align:center;">
         <div id="customConfirmMsg" style="margin-bottom:1.5rem;font-size:1.1rem;line-height:1.6;"></div>
@@ -104,7 +104,7 @@
       <div id="activeLoans" class="list"></div>
   <div class="hint" style="margin-top:8px;">Når denne listen er tom: Utfør telling av våpen.</div>
     </section>
-   <!-- Tellefunksjon -->
+   <!-- Counter function -->
 <section id="weapon-count-section" style="max-width:500px;margin:2rem auto;">
   <h2>Våpentelling <span id="tellerWeaponCounter" class="weapon-count" style="font-size:0.9em;margin-left:0.5em;">0 våpen</span></h2>
 
@@ -126,7 +126,7 @@
     </button>
   </form>
 
-  <!-- Filterknapp (kun én blokk) -->
+  <!-- Filter button (only one block) -->
   <div style="margin: 1rem 0;">
     <button id="showAll" type="button" class="active">Vis alle</button>
     <button id="showDeviations" type="button">
@@ -160,7 +160,7 @@
         <div id="jsonImportStatus" style="margin-top:1em;"></div>
       </div>
       
-      <!-- Brukerstyring panel -->
+      <!-- User Access panel -->
       <div id="adminUsersPanel" style="display:none;margin-top:1em;padding:1em;border:1px solid var(--border);border-radius:6px;">
         <h3>Brukertilgang</h3>
         <div style="margin-bottom:1em;">
