@@ -1,33 +1,18 @@
 // ====== FIREBASE INTEGRATION (TOPP) ======
 import { auth, db } from './firebase-config.js';
-import { GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
+import { loginWithGoogle, getLoginResult, logout, onAuthChange } from './firebase-auth.js';
 import { doc, setDoc, getDoc, collection, onSnapshot, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
-
-// Configure Google Auth Provider with new OAuth Client ID
-const provider = new GoogleAuthProvider();
-provider.setCustomParameters({
-  'client_id': '851025174814-utovpv2c926sj52bcmk8oice5eh33pfm.apps.googleusercontent.com'
-});
 
 const firestore = db;
 
 let isAuthenticated = false;
 let currentUser = null;
 
-async function fbLogin() {
-  const result = await signInWithPopup(auth, provider);
-  return result.user;
-}
+// Auth functions now imported from firebase-auth.js
+// loginWithGoogle() starts redirect flow
+// getLoginResult() gets the result after redirect
 
-async function fbLogout() {
-  await signOut(auth);
-}
-
-function fbAuthStateChange(callback) {
-  return onAuthStateChanged(auth, callback);
-}
-
-// ====== TILGANGSKONTROLL ======
+// ====== Access Control ======
 async function checkUserAccess(userEmail) {
   try {
     const accessDoc = doc(firestore, 'weaponlog', 'access');
@@ -37,7 +22,7 @@ async function checkUserAccess(userEmail) {
       const accessData = docSnap.data();
       const allowedUsers = accessData.allowedUsers || [];
       
-      // Hvis listen er tom, legg til første bruker
+      // If no users in list, add the first one (bootstrap) - this allows the very first user to gain access and set up the system
       if (allowedUsers.length === 0) {
         allowedUsers.push(userEmail);
         await setDoc(accessDoc, {
@@ -49,7 +34,7 @@ async function checkUserAccess(userEmail) {
         return true;
       }
       
-      // Sjekk om bruker er i listen
+      // Check if user is in allowed list
       return allowedUsers.includes(userEmail);
     } else {
       // First time - create access list with the current user as admin
@@ -204,7 +189,8 @@ function setupAuthUI() {
       loginBtn.disabled = true;
       loginBtn.textContent = 'Laster...';
       try {
-        await fbLogin();
+        await loginWithGoogle();
+        // User will be redirected to Google, then back to app
       } catch (e) {
         alert('Login feilet: ' + e.message);
         loginBtn.disabled = false;
@@ -216,14 +202,14 @@ function setupAuthUI() {
   if (logoutBtn) {
     logoutBtn.onclick = async () => {
       try {
-        await fbLogout();
+        await logout();
       } catch (e) {
         console.error('Logout feilet:', e);
       }
     };
   }
 
-  fbAuthStateChange(async (user) => {
+  onAuthChange(async (user) => {
     if (user) {
       console.log('🔐 Sjekker tilgang for:', user.email);
       
@@ -1663,7 +1649,15 @@ el.filterShootingInstructor.addEventListener('change', renderHistory);
 el.filterMember.addEventListener('change', renderHistory);
 
 // ====== First init ======
-document.addEventListener('DOMContentLoaded', setupAuthUI);
+document.addEventListener('DOMContentLoaded', async () => {
+  // Handle redirect result from Google auth
+  try {
+    await getLoginResult();
+  } catch (error) {
+    console.error('[Auth] Error handling redirect result:', error);
+  }
+  setupAuthUI();
+});
 
 (function bootstrap() {
   if (state.skyteledere.length === 0) {
