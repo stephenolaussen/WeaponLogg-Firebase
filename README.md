@@ -1,4 +1,4 @@
-# WeaponLog (V6.24) - Firebase Edition
+# WeaponLog (V1.0) - Firebase Edition
 
 ##  Overview
 WeaponLog is a web-based application designed for shooting clubs to efficiently track and manage firearms, rentals, maintenance, and user permissions. This Firebase edition includes cloud synchronization, multi-user access, and real-time updates across all devices.
