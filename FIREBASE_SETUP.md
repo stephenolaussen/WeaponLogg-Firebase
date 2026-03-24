@@ -40,26 +40,51 @@ const firebaseConfig = {
 
 1. In Firebase Console, go to **Build** → **Firestore Database**
 2. Click **Create Database**
-3. Choose **production mode**
-4. Select **your region** (choose closest to you, e.g., `europe-west1`)
+3. Choose **production mode** (permanent, needed for club use)
+4. Select your **region** (closest to you, e.g., `europe-west1`)
 5. Click **Create**
 
-### Firestore Security Rules
+**⚠️ Important:** Production mode requires security rules (see next step). Test mode expires in 30 days and is only for testing.
 
-In Firestore Console, go to **Rules** tab and replace with:
+### Firestore Security Rules (REQUIRED for Production)
+
+In Firestore Console, go to the **Rules** tab and replace with:
 
 ```firestore
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+    // Allow access to the access control document
+    match /weaponlog/access {
+      allow read: if request.auth != null;
+    }
+    
+    // Only allow access if user is in allowedUsers list
     match /{document=**} {
-      allow read, write: if request.auth != null;
+      allow read, write: if request.auth != null && 
+        request.auth.email in 
+        get(/databases/$(database)/documents/weaponlog/access).data.allowedUsers;
     }
   }
 }
 ```
 
-Click **Publish**. This ensures only authenticated users can access your data.
+Click **Publish** and wait for the green checkmark (usually 1-2 minutes).
+
+**What these rules do:**
+- ✅ Only users you add via the Admin panel can access the database
+- ✅ Checks the `allowedUsers` list in Firestore
+- ✅ Blocks all unauthenticated access
+- ✅ Secure at the database level (not just the app)
+- ✅ Perfect for shooting clubs - only invited members get access
+
+**Add/Remove Users:**
+1. In the app: Click **Admin** button
+2. Click **"Legg til bruker"** or **"Fjern bruker"**
+3. Enter email and admin password
+4. Changes take effect immediately
+
+**DO NOT SKIP THIS STEP** - Production mode requires explicit security rules to work.
 
 ## Step 5: Enable Google Authentication
 

@@ -311,7 +311,7 @@ if (document.getElementById('downloadDefectLogBtn')) {
 // Admin password handling (only one source)
 const PASSORD_KEY = 'wlog_admin_passord';
 function getAdminPassword() {
-  return localStorage.getItem(PASSORD_KEY) || 'TimePK';
+  return localStorage.getItem(PASSORD_KEY) || 'Admin';
 }
 function setAdminPassword(nytt) {
   localStorage.setItem(PASSORD_KEY, nytt);

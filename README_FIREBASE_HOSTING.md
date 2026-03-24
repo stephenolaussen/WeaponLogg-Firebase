@@ -1,103 +1,357 @@
-# Firebase Hosting Setup - Step by Step
+# WeaponLog - Complete Setup & Deployment Guide
 
-## Overview
-This guide explains how to deploy WeaponLogg app to Firebase Hosting. This keeps your Firebase API key secure (not exposed on GitHub) while hosting the app 24/7 for free.
-
-## Requirements
-- Windows PC
-- Firebase project (`WeaponLog-Firebase`)
-- Git repository on GitHub
+## 📋 Table of Contents
+1. [Firebase Project Setup](#firebase-project-setup)
+2. [Web App Registration](#web-app-registration)
+3. [Configuration](#configuration)
+4. [Firestore Database Setup](#firestore-database-setup)
+5. [Authentication Setup](#authentication-setup)
+6. [Local Development](#local-development)
+7. [Hosting Setup & Deployment](#hosting-setup--deployment)
+8. [Multi-User & Cloud Sync](#multi-user--cloud-sync)
+9. [Sharing with Other Shooting Clubs](#sharing-with-other-shooting-clubs)
 
 ---
 
-## STEP 1: Install Node.js
+## Firebase Project Setup
+
+### Step 1: Create a Firebase Project
+
+1. Go to [Firebase Console](https://console.firebase.google.com)
+2. Click **"Create Project"** or **"Add Project"**
+3. Enter project name (e.g., `WeaponLog-Firebase` for your club)
+4. Accept Google Analytics settings (default is fine)
+5. Click **"Create Project"** and wait for initialization (1-2 minutes)
+
+---
+
+## Web App Registration
+
+### Step 2: Register a Web App
+
+1. In Firebase Console, click the **gear icon** → **Project Settings**
+2. Go to the **"Your apps"** section
+3. Click the **Web icon** (`</>`)
+4. Enter app nickname: `WeaponLog` (or your club name)
+5. **Check:** "Also set up Firebase Hosting for this app" (optional but recommended)
+6. Click **"Register app"**
+7. Copy the entire Firebase configuration block
+
+---
+
+## Configuration
+
+### Step 3: Update firebase-config.js
+
+1. In your code editor, open `firebase-config.js` in the project root
+2. Replace the existing `firebaseConfig` object with the one you copied from Firebase:
+
+```javascript
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY_HERE",
+  authDomain: "your-project.firebaseapp.com",
+  projectId: "your-project-id",
+  storageBucket: "your-project.firebasestorage.app",
+  messagingSenderId: "123456789",
+  appId: "1:123456789:web:abc123xyz"
+};
+```
+
+**Save the file.**
+
+---
+
+## Firestore Database Setup
+
+### Step 4: Create Firestore Database
+
+1. In Firebase Console, go to **Build** → **Firestore Database**
+2. Click **"Create Database"**
+3. **Choose:**
+   - Location: Select closest region to you (e.g., `europe-west1` for Norway)
+   - Mode: **"Start in production mode"** (permanent, requires security rules)
+4. Click **"Create"**
+5. Wait for database to initialize (1-2 minutes)
+
+**Note:** Production mode is required for permanent club use. Test mode auto-expires after 30 days.
+
+### Step 5: Set Security Rules (Production Mode)
+
+**⚠️ IMPORTANT:** Production mode denies ALL access by default. You MUST set security rules or the app won't work.
+
+1. In Firestore Console, go to the **"Rules"** tab
+2. Replace all content with:
+
+```
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Check if user is in the allowed users list
+    match /weaponlog/access {
+      allow read: if request.auth != null;
+    }
+    
+    // Allow access only if user is in allowedUsers list
+    match /{document=**} {
+      allow read, write: if request.auth != null && 
+        request.auth.email in 
+        get(/databases/$(database)/documents/weaponlog/access).data.allowedUsers;
+    }
+  }
+}
+```
+
+3. Click **"Publish"** and wait for deployment (1-2 minutes)
+4. Verify rules are published (green checkmark)
+
+### What These Rules Mean
+
+- ✅ **Only invited users** can access (must be in `allowedUsers` list)
+- ✅ **Add users via Admin panel** - click "Legg til bruker" with their email
+- ✅ **Secure at database level** - Firestore enforces access, not just the app
+- ✅ **No data leakage** - Unauthorized users get database error if they try to access
+
+### How to Add Users
+
+1. In the app: Click **Admin** (red button)
+2. Click **"Legg til bruker"**
+3. Enter user's email address
+4. Enter admin password
+5. Click "Legg til"
+6. User now has access (they will be added to `allowedUsers` in Firestore)
+
+### Remove User Access
+
+1. In the app: Click **Admin** → **"Fjern bruker"**
+2. Select user from list
+3. Enter admin password
+4. User access is revoked immediately
+
+### Optional: Simple Access (Everyone with Google Account)
+
+If you want ANY Google user to access (easier for testing), use the simple rules:
+
+```
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if request.auth != null;
+    }
+  }
+}
+```
+
+**Use the first (restricted) rules for production.** Use simple rules only for testing.
+
+---
+
+## Authentication Setup
+
+### Step 6: Enable Google Sign-In
+
+1. Go to **Build** → **Authentication**
+2. Click the **"Sign-in method"** tab
+3. Click **"Google"** provider
+4. Toggle **"Enable"** to ON
+5. Select a **Support email** from the dropdown
+6. Click **"Save"**
+
+### Step 7: Add OAuth Redirect URIs
+
+1. Go to **APIs & Services** → **Credentials** (in Google Cloud Console)
+2. Click your **OAuth 2.0 Client ID** (created automatically)
+3. Add to **Authorized JavaScript origins:**
+   - `https://YOUR_HOSTING_URL.web.app`
+   - `https://YOUR_HOSTING_URL.web.app/`
+   - `http://localhost:8000` (for local development)
+
+4. Add to **Authorized redirect URIs:**
+   - `https://YOUR_HOSTING_URL.web.app/__/auth/callback`
+
+5. Click **"Save"**
+
+---
+
+## Local Development
+
+### Step 8: Start Local Server
+
+To test locally, you need an HTTP server (required for Firebase authentication):
+
+**Using Python (easiest):**
+```powershell
+python -m http.server 8000
+```
+
+**Using Node.js:**
+```powershell
+npx http-server -p 8000
+```
+
+Then open: `http://localhost:8000` in your browser
+
+---
+
+## Hosting Setup & Deployment
+
+### Step 9: Install Node.js & Firebase CLI
 
 1. Go to https://nodejs.org/
-2. Download the **LTS** version (Long Term Support - green button)
-3. Run the installer - select all default options (click "Next" throughout)
-4. **IMPORTANT:** Restart PowerShell/Terminal after installation
+2. Download the **LTS** version
+3. Run installer with default settings
+4. **Restart PowerShell after installation**
 
-**Verify installation:**
+Verify:
 ```powershell
 node --version
 npm --version
 ```
-Both should display version numbers (e.g., `v20.10.0` and `10.2.0`)
 
----
-
-## STEP 2: Install Firebase CLI
-
-In PowerShell, run:
+Install Firebase CLI globally:
 ```powershell
 npm install -g firebase-tools
 ```
 
-This installs the Firebase Command Line Interface globally. Wait until it's complete (approximately 1-2 minutes).
-
-**Verify:**
+Verify:
 ```powershell
 firebase --version
 ```
-Should display a version number (e.g., `13.0.0`)
 
----
-
-## STEP 3: Log In to Firebase
+### Step 10: Login to Firebase
 
 ```powershell
 firebase login
 ```
 
-**What happens:**
-1. Your browser opens automatically
-2. Log in with your Google account (same as your Firebase project)
-3. Accept the permissions
-4. Return to PowerShell
+Your browser opens - log in with your Google account and authorize. Return to PowerShell when done.
 
-**You should see:**
-```
-Success! Logged in as your-email@gmail.com
-```
+### Step 11: Initialize Hosting
 
----
-
-## STEP 4: Initialize Firebase Hosting
-
-In your project folder, run:
+In your project folder:
 ```powershell
 firebase init hosting
 ```
 
-**Answer the questions as follows:**
+Answer as follows:
+- **Use existing project?** → Y
+- **Select project** → Choose your Firebase project
+- **Public directory** → **.** (just a period)
+- **Single-page app (rewrite URLs to index.html)?** → Y
+- **File exists, overwrite?** → N
+- **Auto-deploy with GitHub?** → N
 
-| Question | Answer |
-|----------|--------|
-| Use an existing project? | **Y** (Yes) |
-| Select a project | Select `WeaponLog-Firebase` |
-| What do you want to use as your public directory? | **`.`** (just a period) |
-| Single-page app (rewrite all URLs to index.html)? | **Y** (Yes) |
-| Overwrite index.html? | **N** (No) |
-| Set up automatic builds and deploys with GitHub? | **N** (No) |
-
-**Result:**
-- New file `firebase.json` is created
-- New folder `.firebaserc` (hidden) is created
-- Configuration is saved
-
----
-
-## STEP 5: Deploy to Firebase Hosting
+### Step 12: Deploy to Firebase Hosting
 
 ```powershell
 firebase deploy
 ```
 
-**Wait:** Approximately 1-2 minutes
-
-**Result - you should see:**
+**Result:**
 ```
 ✔  Deploy complete!
+
+Project Console: https://console.firebase.google.com/project/your-project/overview
+Hosting URL: https://your-project.web.app
+```
+
+Your app is now live! 🎉
+
+---
+
+## Multi-User & Cloud Sync
+
+### How It Works
+
+- **First login:** The first user (admin) gets automatically added to the access list
+- **Add more users:** Click **Admin** → **Legg til bruker** and enter their email + admin password
+- **Real-time sync:** All users see updates in real-time across devices
+- **Offline support:** Changes sync to cloud when connection is restored
+
+### Admin Features
+
+- Change admin password (red **Admin** button)
+- Add/remove users
+- Export data to CSV
+- View active users
+
+---
+
+## Sharing with Other Shooting Clubs
+
+### For Each Shooting Club:
+
+1. **Clone the repository:**
+   ```powershell
+   git clone <your-repo-url>
+   cd WeaponLogg-Firebase
+   ```
+
+2. **Create their own Firebase project** (follows steps 1-7 above)
+
+3. **Update firebase-config.js** with their Firebase credentials
+
+4. **Set up Hosting** (follows steps 9-12 above)
+
+5. **Deploy to their hosting URL**
+
+### Important Notes:
+
+- ✅ Each club has **completely separate data** (own database)
+- ✅ Each club controls their **own admin password**
+- ✅ No data is shared between clubs
+- ✅ Each club can customize icons and styling
+- ✅ Full offline support for all clubs
+
+---
+
+## Troubleshooting
+
+### "API key not valid" Error
+- Verify `firebase-config.js` has correct credentials from your Firebase project
+- Check that Web App is registered in Firebase Console
+
+### "Operation not allowed" Error  
+- Google Sign-In is not enabled
+- Go to **Authentication** → **Sign-in method** → Enable **Google**
+
+### "Cloud Firestore backend unavailable"
+- Firestore database not created
+- Go to **Firestore Database** and click **Create Database**
+- Wait for initialization (1-2 minutes)
+
+### CORS Errors in Console
+- Add your hosting URL to OAuth authorized origins (Step 7)
+- Wait 5-15 minutes for settings to take effect
+- Errors are warnings - app still works
+
+### Can't deploy with `firebase deploy`
+- Verify you're logged in: `firebase login`
+- Verify correct project: `firebase projects:list`
+- Verify `firebase.json` exists in project root
+
+---
+
+## Support
+
+For issues or questions:
+1. Check the troubleshooting section above
+2. Review [Firebase Documentation](https://firebase.google.com/docs)
+3. Check your app's browser console (F12 → Console tab) for error messages
+
+---
+
+## Next Steps
+
+✅ Setup complete! Your shooting club now has:
+- Cloud data storage
+- Multi-user real-time sync
+- Offline support
+- Google authentication
+- Mobile & desktop support
+- Free hosting
+
+Start adding your shooting club members in the Admin panel!
 
 Project Console: https://Link name will be in your Terminal
 Hosting URL: https://Link name will be in your Terminal
