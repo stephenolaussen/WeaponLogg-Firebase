@@ -1,6 +1,6 @@
 # WeaponLog (V6.24) - Firebase Edition
 
-## 🎯 Overview
+##  Overview
 WeaponLog is a web-based application designed for shooting clubs to efficiently track and manage firearms, rentals, maintenance, and user permissions. This Firebase edition includes cloud synchronization, multi-user access, and real-time updates across all devices.
 
 **Live Demo:** https://weaponlog-firebase.web.app  
@@ -8,20 +8,20 @@ WeaponLog is a web-based application designed for shooting clubs to efficiently 
 
 ---
 
-## ✨ Features
+##  Features
 
-- 🔐 **Firebase Authentication** - Secure Google Sign-In
-- ☁️ **Cloud Synchronization** - Real-time updates across all users and devices
-- 📱 **Multi-Platform** - Optimized for desktop and mobile
-- 🔌 **Offline Support** - Works offline, syncs when connection is restored
-- 🎨 **Progressive Web App** - Install as app on mobile/desktop
-- 📊 **Admin Panel** - Manage users, set passwords, export data
-- 📝 **Audit Logs** - Track all changes with timestamps
-- 🌐 **Multi-Club Support** - Each club has separate secure database
+-  **Firebase Authentication** - Secure Google Sign-In
+-  **Cloud Synchronization** - Real-time updates across all users and devices
+-  **Multi-Platform** - Optimized for desktop and mobile
+-  **Offline Support** - Works offline, syncs when connection is restored
+-  **Progressive Web App** - Install as app on mobile/desktop
+-  **Admin Panel** - Manage users, set passwords, export data
+-  **Audit Logs** - Track all changes with timestamps
+-  **Multi-Club Support** - Each club has separate secure database
 
 ---
 
-## 🚀 Quick Start
+##  Quick Start
 
 ### For First-Time Users
 1. **New shooting club?** Follow [SETUP GUIDE](README_FIREBASE_HOSTING.md) for complete Firebase setup
@@ -34,14 +34,14 @@ WeaponLog is a web-based application designed for shooting clubs to efficiently 
 
 ---
 
-## 📖 Documentation
+##  Documentation
 
 - **[Complete Setup Guide](README_FIREBASE_HOSTING.md)** - Step-by-step Firebase & hosting setup
 - **[Firebase Integration Details](FIREBASE_SETUP.md)** - Technical Firebase configuration
 
 ---
 
-## 🏗️ Project Structure
+##  Project Structure
 
 ```
 WeaponLog-Firebase/
@@ -63,7 +63,7 @@ WeaponLog-Firebase/
 
 ---
 
-## 🔑 Main Features Explained
+##  Main Features Explained
 
 ### User Management
 - First user becomes admin automatically
@@ -91,7 +91,7 @@ WeaponLog-Firebase/
 
 ---
 
-## 🌍 Sharing with Other Clubs
+##  Sharing with Other Clubs
 
 Each shooting club can have their own WeaponLog instance with complete data separation:
 
@@ -122,7 +122,7 @@ Each shooting club can have their own WeaponLog instance with complete data sepa
 
 ---
 
-## 🛠️ Local Development
+##  Local Development
 
 ### Prerequisites
 - Node.js v14+ ([Download](https://nodejs.org/))
@@ -153,7 +153,7 @@ Each shooting club can have their own WeaponLog instance with complete data sepa
 
 ---
 
-## 📱 Progressive Web App (PWA)
+##  Progressive Web App (PWA)
 
 Install WeaponLog as an app on your device:
 
@@ -167,17 +167,17 @@ The app works offline and syncs when connection is restored!
 
 ---
 
-## 🔒 Security
+##  Security
 
-- 🔐 Firebase Authentication (no passwords stored)
-- 🛡️ Firestore Security Rules (authenticated users only)
-- 🌐 HTTPS encrypted communication
-- 💾 Admin password only for sensitive operations
-- 📋 Full audit trail of all changes
+-  Firebase Authentication (no passwords stored)
+-  Firestore Security Rules (authenticated users only)
+-  HTTPS encrypted communication
+-  Admin password only for sensitive operations
+-  Full audit trail of all changes
 
 ---
 
-## ⚡ Performance
+##  Performance
 
 - Fast real-time updates
 - Offline-first architecture
@@ -187,7 +187,7 @@ The app works offline and syncs when connection is restored!
 
 ---
 
-## 🐛 Troubleshooting
+##  Troubleshooting
 
 ### Login Issues
 - Ensure Google Sign-In is enabled in Firebase Console
@@ -207,7 +207,7 @@ See [Setup Guide Troubleshooting](README_FIREBASE_HOSTING.md#troubleshooting) fo
 
 ---
 
-## 📞 Support
+##  Support
 
 - Check application console (F12 → Console tab)
 - Review [Setup Guide](README_FIREBASE_HOSTING.md)
@@ -215,9 +215,17 @@ See [Setup Guide Troubleshooting](README_FIREBASE_HOSTING.md#troubleshooting) fo
 
 ---
 
-## 📄 License
+##  License
 
-This project is licensed under the MIT License - see [LICENSE](LICENSE) file for details.
+**⚠️ PROPRIETARY - RESTRICTED USE**
+
+This software is proprietary and confidential. It may ONLY be used by:
+- Stephen Olaussen (Author)  
+- Authorized shooting clubs that have purchased an explicit commercial license
+
+**Unauthorized use, copying, modification, or distribution is strictly prohibited** and will result in legal action.
+
+See [LICENSE](LICENSE) file for full terms. For licensing inquiries: Contact Stephen Olaussen
 
 ---
 
@@ -229,12 +237,12 @@ Last Updated: March 24, 2026 (Firebase Integration Complete)
 
 ---
 
-## 🎉 Getting Started Today
+##  Getting Started Today
 
-1. 📖 Read the [Setup Guide](README_FIREBASE_HOSTING.md)
-2. 🔧 Follow the steps to configure Firebase
-3. 🚀 Deploy to Firebase Hosting  
-4. 👥 Add your shooting club members
-5. 📊 Start tracking weapons and rentals!
+1.  Read the [Setup Guide](README_FIREBASE_HOSTING.md)
+2.  Follow the steps to configure Firebase
+3.  Deploy to Firebase Hosting  
+4.  Add your shooting club members
+5.  Start tracking weapons and rentals!
 
 **Questions?** Check the troubleshooting section or review the setup guide!
