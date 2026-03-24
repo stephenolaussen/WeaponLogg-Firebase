@@ -1,6 +1,6 @@
 # WeaponLog - Complete Setup & Deployment Guide
 
-## 📋 Table of Contents
+##  Table of Contents
 1. [Firebase Project Setup](#firebase-project-setup)
 2. [Web App Registration](#web-app-registration)
 3. [Configuration](#configuration)
